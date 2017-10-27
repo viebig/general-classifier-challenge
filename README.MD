@@ -26,7 +26,7 @@ All buttons will be assiciated with hotkeys
 
 ## Guidelines
 - NodeJS
-- Boostrap or similar
+- Bootstrap or similar
 - Skip will generate an empty newline
 
 Good luck!
