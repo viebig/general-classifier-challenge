@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="utf-8">
     <title>Classifier</title>
@@ -11,59 +12,30 @@
         body {
             padding-top: 150px;
         }
-        .upload-drop-zone {
-            color: #ccc;
-            border-style: dashed;
-            border-color: #ccc;
-            border-radius:10px;
-            line-height: 200px;
-            text-align: center
-        }
-        .upload-drop-zone.drop {
-            color: #222;
-            border-color: #222;
-        }
     </style>
-    <script>
-    $("#formulario").submit(function () {
-            var formData = new FormData(this);
-
-            $.ajax({
-                url: window.location.pathname,
-                type: 'POST',
-                data: formData,
-                success: function (data) {
-                    alert(data)
-                },
-                cache: false,
-                contentType: false,
-                processData: false,
-                xhr: function () {  // Custom XMLHttpRequest
-                    var myXhr = $.ajaxSettings.xhr();
-                    if (myXhr.upload) { // Avalia se tem suporte a propriedade upload
-                        myXhr.upload.addEventListener('progress', function () {
-                            /* faz alguma coisa durante o progresso do upload */
-                        }, false);
-                    }
-                    return myXhr;
-                }
-            });
-        });
-    </script>
 </head>
+
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container">
-                <h1 class="masterhead-brand">Classifier</h1>
+                <h1 class="masterhead-brand">General Classifier</h1>
             </div>
         </div>
     </div>
 
-    <div class="container" method="post" enctype="multipart/form-data">
-        <div style="border: 4px dashed #666; text-align:center; padding:50px;">Your zip file here</div>
+    <div class="container">
+        <form action="fileupload" method="post" enctype="multipart/form-data">
+            <input type="file" name="filetoupload">
+            <br>
+            <input type="submit">
+        </form>
+
     </div>
 
+    <div class=modal>
+        
+    </div>
 </body>
 
 </html>
