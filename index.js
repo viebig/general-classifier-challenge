@@ -21,10 +21,18 @@ router.post('/fileupload', function (req, res) {
     form.parse(req, function (err, fields, files) {
             var csv = files.csvtoupload.path;
             var txt = files.txttoupload.path;
+            var read_stream = fs.createReadStream( csv, { encoding: 'ascii' });
 
-            res.write(csv);
-            res.write(txt);
-            res.end();
+            read_stream.on("data", function (data) {
+                res.write(data);
+                res.end();
+            });
+            read_stream.on("error", function (err) {
+                console.error("An error occurred: %s", err)
+            });
+            read_stream.on("close", function () {
+                console.log("File closed.")
+            });
         });
 })
 
