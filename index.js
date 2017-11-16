@@ -1,44 +1,51 @@
-
+var http = require('http');
+var fs = require('fs');
 var express = require('express');
 var app = express();
-var router = express.Router();
-var formidable = require('formidable');
-var fs = require('fs');
+var bodyParser = require('body-parser')
+var jsonParser = bodyParser.json()
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
-var path = __dirname + '/';
+var TxtFile = fs.readFileSync(__dirname + '/in/messages.txt', 'utf8');
+var CsvFile = fs.readFileSync(__dirname + '/in/classification.csv', 'utf8');
 
-app.use('/', router);
-app.use('/', express.static(__dirname + '/www'));
-app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
-app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
+app.set('view engine', 'ejs');
 
-router.get('/',function(req, res){
-    res.sendFile(path + 'index.html');
+app.get('/', function(req, res) {
+    res.render('index', {prhase: 'queijo', CategoryA: 'categoria', CategoryB: 'categoria'});
 });
 
-router.post('/fileupload', function (req, res) {
-    var form = new formidable.IncomingForm();
-    form.parse(req, function (err, fields, files) {
-            var csv = files.csvtoupload.path;
-            var txt = files.txttoupload.path;
-            var read_stream = fs.createReadStream( csv, { encoding: 'ascii' });
-
-            read_stream.on("data", function (data) {
-                res.write(data);
-                res.end();
-            });
-            read_stream.on("error", function (err) {
-                console.error("An error occurred: %s", err)
-            });
-            read_stream.on("close", function () {
-                console.log("File closed.")
-            });
-        });
-})
-
-app.use('*', function (req, res) {
-    res.send('Error 404: Not Found!');
+app.post('/', urlencodedParser, function (req, res) {
+    var count = 1;
+    var turn = req.body.action;
+    if(turn == 'next') {
+        var number = count + 1;
+    }
+    if(turn == 'prev') {
+        var number = count - 1;
+    }
+    console.log(number);
+    var PhraseResult = txtLine(TxtFile, number);
+    // var categoryResult = csvLine(CsvFile, number);
+    console.log(PhraseResult);
+    res.render('index', { prhase: PhraseResult, CategoryA: 'categoria', CategoryB: 'categoria' });
+    res.end();
 });
 
-app.listen(3000);
-console.log("listen on port 3000!")
+
+function txtLine(TxtFile, index) {
+    var txtParse = TxtFile.split("\n"); 
+    var txtElement = txtParse[index];
+    
+    return txtElement;
+}
+
+function CsvFile(csvFile, index) {
+    res.write(csvElement + "<br>");
+    var csvParse = CsvFile.split("\n");
+    var csvElement = csvParse[index];
+}
+
+
+app.listen(5000);
+console.log("listen on port 5000!");

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <title>Classifier</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background-color: #777;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: bold;
+            font-size: 25pt;
+            color:#fff;
+            text-align: center;
+        }
+        button{
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px;
+        }
+        .box{
+            border: 2px solid #000;
+            background-color: #fff;
+            color: #000;
+            padding: 20px;
+            margin: auto;
+            display: inline;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>GENERAL CLASSIFIER</h1>
+    <p>o melhor classificador que você verá hoje</p>
+    <form action="/" method="POST">
+        <label for="phrase"></label>
+        <button name="action" value="prev">previous</button>
+        <div class="box">
+            <%= prhase %>
+        </div>
+        <button name="action" value="next">next</button>
+            <br>
+            <span><%= CategoryA %></span>
+            <span><%= CategoryB %></span>
+            <button name="previous" value="skip">skip</button>
+        </form>
+</body>
+</html>
