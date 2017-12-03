@@ -27,8 +27,6 @@ const final = Object.keys(types).reduce((arr, type) => {
     );
 }, []);
 
-console.log(JSON.stringify(final));
-
 let Category = csvLine(final);
 
 app.get('/', function (req, res) {
@@ -39,9 +37,12 @@ app.get('/', function (req, res) {
 app.post('/', urlencodedParser, function (req, res) {
     let turn = req.body.action;
     let cats = req.body.category;
-    number = parseInt(number) + parseInt(turn);
-    if (number == -1) {
-        number = 0;
+    console.log(cats);
+    if(turn) {
+        number = parseInt(number) + parseInt(turn);
+        if (number == -1) {
+            number = 0;
+        }
     }
     let PhraseResult = txtLine(txtFile, number);
     if (cats) {
@@ -52,7 +53,6 @@ app.post('/', urlencodedParser, function (req, res) {
     res.render('index', { prhase: PhraseResult, Category: catHeader});
     res.end();
 });
-
 
 function txtLine(txtFile, index) {
     let txtParse = txtFile.split("\n");
