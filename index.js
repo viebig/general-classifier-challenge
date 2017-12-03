@@ -35,7 +35,7 @@ app.get('/', function (req, res) {
 app.post('/', urlencodedParser, function (req, res) {
     let turn = req.body.action;
     let cats = req.body.category;
-
+    
     if (turn) {
         number = parseInt(number) + parseInt(turn);
         if (number == -1) {
@@ -43,6 +43,7 @@ app.post('/', urlencodedParser, function (req, res) {
         }
     }
     let PhraseResult = txtLine(txtFile, number);
+    writeIntoFile(PhraseResult, categoryHeaders[cats]);
 
     if (cats) {
         category = csvSub(subsCategory, cats);
@@ -71,6 +72,11 @@ function csvSub(array, index) {
 
 function detected(value) {
     console.log("testeOk");
+}
+
+function writeIntoFile(txtOutput, firstCategory) {
+    console.log(txtOutput);
+    console.log(firstCategory);
 }
 
 app.listen(5000);
