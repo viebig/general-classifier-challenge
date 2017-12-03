@@ -28,6 +28,11 @@
             margin: auto;
         }
     </style>
+    <script>
+    function showButtons(){
+
+    }
+    </script>
 </head>
 
 <body>
@@ -41,8 +46,11 @@
         <button name="action" value="-1">previous</button>
         <button name="action" value="1">next</button>
             <br>
-            <button name="category" value="<%= CategoryA %>"><%= CategoryA %></button>
-            <button name="category" value="<%= CategoryB %>"><%= CategoryB %></button>
+            <% var j = 1 %>
+            <% for(var i=0; i < Category.length; i++) {%>
+                    <button name="category" value="<%= i %>"><%= Category[i] %></button>
+                <% j +=2 %>
+                <% } %>
             <button name="skip" value="true">skip</button>
         </form>
 </body>

@@ -9,43 +9,50 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false })
 const txtFile = fs.readFileSync(__dirname + '/in/messages.txt', 'utf8');
 const csvFile = fs.readFileSync(__dirname + '/in/classification.csv', 'utf8');
 let data = csvFile.split('\n');
-let final = {};
 let number = 0;
 app.set('view engine', 'ejs');
 
+const types = {};
 data.forEach(function (row) {
-    row = row.split(',');
-    if (!final[row[0]]) {
-        final[row[0]] = [];
+    if (!row.trim()) return;
+    const [type, value] = row.split(',').map(s => s.trim());
+    if (!types[type]) {
+        types[type] = [];
     }
-    final[row[0]].push(row[1]);
+    types[type].push(value);
 });
+const final = Object.keys(types).reduce((arr, type) => {
+    return arr.concat(
+        [type, types[type]]
+    );
+}, []);
+
+console.log(JSON.stringify(final));
+
+let Category = csvLine(final);
 
 app.get('/', function (req, res) {
     let PhraseResult = txtLine(txtFile, number);
-    let CategoryResult = csvLine(final);
-    res.render('index', { prhase: PhraseResult, CategoryA: CategoryResult[0], CategoryB: CategoryResult[1]});
+    res.render('index', { prhase: PhraseResult, Category: Category});
 });
 
 app.post('/', urlencodedParser, function (req, res) {
     let turn = req.body.action;
     let cats = req.body.category;
-    
     number = parseInt(number) + parseInt(turn);
     if (number == -1) {
         number = 0;
     }
     let PhraseResult = txtLine(txtFile, number);
-
-    if (cats in final){
-        catHeader = final[cats];
+    if (cats) {
+        catHeader = csvSub(final, cats);
     } else {
-        catHeader = csvLine(final);
+        catHeader = Category;
     }
-    
-    res.render('index', { prhase: PhraseResult, CategoryA: catHeader[0], CategoryB: catHeader[1] });
+    res.render('index', { prhase: PhraseResult, Category: catHeader});
     res.end();
 });
+
 
 function txtLine(txtFile, index) {
     let txtParse = txtFile.split("\n");
@@ -57,9 +64,19 @@ function txtLine(txtFile, index) {
 }
 
 function csvLine(csvFile) {
-    // let allTextLines = csvFile.split(/\r\n|\n/);
-    // let headers = allTextLines[0].split(',');
-     return ['headers', 'ghfg'];
+    let headers = [];
+    let i = 0;
+    for (let index = 0; index < csvFile.length; index += 2) {
+        headers[i] = csvFile[index];
+        i++;
+    }
+    return headers;
+}
+
+function csvSub(array, index) {
+    let i = 1;
+    let subCategory = array[i];
+    return subCategory;
 }
 
 app.listen(5000);
