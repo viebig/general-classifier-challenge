@@ -59,7 +59,6 @@ app.post('/', urlencodedParser, function (req, res) {
             case 2:
                 subCategoryDefined = cats;
                 number++;
-                countCategory = 0;
                 break;
             default:
                 break;
@@ -70,9 +69,10 @@ app.post('/', urlencodedParser, function (req, res) {
 
     let PhraseResult = txtLine(txtFile, number);
     let lastPhrase = txtLine(txtFile, number - 1);
-    if (countCategory == 0 && subCategory && number > 0) {
+    if (countCategory == 2 && subCategory) {
         writeIntoFile(lastPhrase, categoryHeaders[categoryDefined], subCategory[subCategoryDefined]);
         category = categoryHeaders;
+        countCategory = 0;
     }
 
     res.render('index', { prhase: PhraseResult, Category: category });
