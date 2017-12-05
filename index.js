@@ -37,9 +37,18 @@ app.get('/', function (req, res) {
 let categoryDefined = '';
 let subCategoryDefined = '';
 let subCategory = '';
+let cancelSkip = false;
 app.post('/', urlencodedParser, function (req, res) {
     let turn = req.body.action;
     let cats = req.body.category;
+    let skip = req.body.skip;
+
+    if (skip) {
+        writeIntoFile(0, 0, 0);
+        category = categoryHeaders;
+        countCategory = 0;
+        number++;
+    }
 
     if (turn) {
         number = parseInt(number) + parseInt(turn);
@@ -51,6 +60,7 @@ app.post('/', urlencodedParser, function (req, res) {
     if (cats) {
         category = csvSub(subsCategory, cats);
         subCategory = category;
+        cancelSkip = true;
         countCategory++;
         switch (countCategory) {
             case 1:
@@ -59,6 +69,7 @@ app.post('/', urlencodedParser, function (req, res) {
             case 2:
                 subCategoryDefined = cats;
                 number++;
+                cancelSkip = false;
                 break;
             default:
                 break;
@@ -74,8 +85,7 @@ app.post('/', urlencodedParser, function (req, res) {
         category = categoryHeaders;
         countCategory = 0;
     }
-
-    res.render('index', { prhase: PhraseResult, Category: category });
+    res.render('index', { prhase: PhraseResult, Category: category, SkipFail: cancelSkip });
     res.end();
 });
 
