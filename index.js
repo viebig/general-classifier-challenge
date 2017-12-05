@@ -54,15 +54,15 @@ app.post('/', urlencodedParser, function (req, res) {
         countCategory++;
         switch (countCategory) {
             case 1:
-            categoryDefined = cats;
-            break;
+                categoryDefined = cats;
+                break;
             case 2:
-            subCategoryDefined = cats;
-            number++;
-            countCategory = 0;
-            break;
+                subCategoryDefined = cats;
+                number++;
+                countCategory = 0;
+                break;
             default:
-            break;
+                break;
         }
     } else {
         category = categoryHeaders;
@@ -70,8 +70,9 @@ app.post('/', urlencodedParser, function (req, res) {
 
     let PhraseResult = txtLine(txtFile, number);
     let lastPhrase = txtLine(txtFile, number - 1);
-    if (countCategory == 0 && subCategory) {
+    if (countCategory == 0 && subCategory && number > 0) {
         writeIntoFile(lastPhrase, categoryHeaders[categoryDefined], subCategory[subCategoryDefined]);
+        category = categoryHeaders;
     }
 
     res.render('index', { prhase: PhraseResult, Category: category });
@@ -93,9 +94,7 @@ function csvSub(array, index) {
 }
 
 function writeIntoFile(txtOutput, firstCategory, category) {
-    console.log(txtOutput);
-    console.log(firstCategory);
-    console.log(category);
+    console.log('"'+txtOutput + '", ' + firstCategory + '_' + category);
 }
 
 app.listen(5000);
