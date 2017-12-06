@@ -8,7 +8,12 @@ const jsonParser = bodyParser.json()
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
 const txtFile = fs.readFileSync(__dirname + '/in/messages.txt', 'utf8');
 const csvFile = fs.readFileSync(__dirname + '/in/classification.csv', 'utf8');
+const outputFile = fs.createWriteStream(__dirname + '/out/outputFile.csv');
 let data = csvFile.split('\n');
+let categoryDefined = '';
+let subCategoryDefined = '';
+let subCategory = '';
+let cancelSkip = false;
 let countCategory = 0;
 let number = 0;
 
@@ -31,13 +36,9 @@ const subsCategory = categoryHeaders.reduce((arr, type) => {
 
 app.get('/', function (req, res) {
     let PhraseResult = txtLine(txtFile, number);
-    res.render('index', { prhase: PhraseResult, Category: categoryHeaders });
+    res.render('index', { prhase: PhraseResult, Category: categoryHeaders, SkipFail: cancelSkip });
 });
 
-let categoryDefined = '';
-let subCategoryDefined = '';
-let subCategory = '';
-let cancelSkip = false;
 app.post('/', urlencodedParser, function (req, res) {
     let turn = req.body.action;
     let cats = req.body.category;
@@ -56,9 +57,11 @@ app.post('/', urlencodedParser, function (req, res) {
             number = 0;
         }
     }
-    
+
     if (cats) {
-        category = csvSub(subsCategory, cats);
+        if (countCategory == 0) {
+            category = bringSub(subsCategory, cats);
+        }
         subCategory = category;
         cancelSkip = true;
         countCategory++;
@@ -80,6 +83,11 @@ app.post('/', urlencodedParser, function (req, res) {
 
     let PhraseResult = txtLine(txtFile, number);
     let lastPhrase = txtLine(txtFile, number - 1);
+    if (PhraseResult == undefined) {
+        number--;
+        PhraseResult = "fim do arquivo alcançado";
+    }
+
     if (countCategory == 2 && subCategory) {
         writeIntoFile(lastPhrase, categoryHeaders[categoryDefined], subCategory[subCategoryDefined]);
         category = categoryHeaders;
@@ -92,19 +100,22 @@ app.post('/', urlencodedParser, function (req, res) {
 function txtLine(txtFile, index) {
     let txtParse = txtFile.split("\n");
     let txtElement = txtParse[index];
-    if (txtElement == undefined) {
-        txtElement = "fim do arquivo alcançado";
-    }
     return txtElement;
 }
 
-function csvSub(array, index) {
+function bringSub(array, index) {
     let subCategory = array[index];
     return subCategory;
 }
 
 function writeIntoFile(txtOutput, firstCategory, category) {
-    console.log('"'+txtOutput + '", ' + firstCategory + '_' + category);
+    let outputLine = '';
+    if (txtOutput == 0) {
+        outputLine = ' \n';
+    } else {
+        outputLine = '"' + txtOutput + '", ' + firstCategory + '_' + category + '\n';
+    }
+    outputFile.write(outputLine, 'UTF8');
 }
 
 app.listen(5000);
