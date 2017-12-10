@@ -9,6 +9,7 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false })
 const txtFile = fs.readFileSync(__dirname + '/in/messages.txt', 'utf8');
 const csvFile = fs.readFileSync(__dirname + '/in/classification.csv', 'utf8');
 const outputFile = fs.createWriteStream(__dirname + '/out/outputFile.csv');
+
 let data = csvFile.split('\n');
 let categoryDefined = '';
 let subCategoryDefined = '';
@@ -16,6 +17,8 @@ let subCategory = '';
 let cancelSkip = false;
 let countCategory = 0;
 let number = 0;
+let position = '';
+
 
 app.set('view engine', 'ejs');
 const types = {};
@@ -36,13 +39,15 @@ const subsCategory = categoryHeaders.reduce((arr, type) => {
 
 app.get('/', function (req, res) {
     let PhraseResult = txtLine(txtFile, number);
-    res.render('index', { prhase: PhraseResult, Category: categoryHeaders, SkipFail: cancelSkip });
+    position = 'first';
+    res.render('index', { prhase: PhraseResult, Category: categoryHeaders, SkipFail: cancelSkip, firstOrLast : position });
 });
 
 app.post('/', urlencodedParser, function (req, res) {
     let turn = req.body.action;
     let cats = req.body.category;
     let skip = req.body.skip;
+    position = 'middlePrhase';
 
     if (skip) {
         writeIntoFile(0, 0, 0);
@@ -57,7 +62,10 @@ app.post('/', urlencodedParser, function (req, res) {
             number = 0;
         }
     }
-
+    if (number == 0) {
+        position = 'first';
+    }
+    
     if (cats) {
         if (countCategory == 0) {
             category = bringSub(subsCategory, cats);
@@ -86,14 +94,14 @@ app.post('/', urlencodedParser, function (req, res) {
     if (PhraseResult == undefined) {
         number--;
         PhraseResult = "fim do arquivo alcançado";
+        position = 'last';
     }
-
     if (countCategory == 2 && subCategory) {
         writeIntoFile(lastPhrase, categoryHeaders[categoryDefined], subCategory[subCategoryDefined]);
         category = categoryHeaders;
         countCategory = 0;
     }
-    res.render('index', { prhase: PhraseResult, Category: category, SkipFail: cancelSkip });
+    res.render('index', { prhase: PhraseResult, Category: category, SkipFail: cancelSkip, firstOrLast: position });
     res.end();
 });
 

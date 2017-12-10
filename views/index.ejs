@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <title>Classifier</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="hotkeys.js">
+
+    </script>
     <style>
         body {
             background-color: #777;
@@ -29,7 +32,6 @@
         }
     </style>
 </head>
-
 <body>
     <h1>GENERAL CLASSIFIER</h1>
     <p>o melhor classificador que você verá hoje</p>
@@ -38,8 +40,12 @@
         <div class="box">
             <%= prhase %>
         </div>
-        <button name="action" value="-1">previous</button>
-        <button name="action" value="1">next</button>
+    <%  if (firstOrLast != 'first' && firstOrLast != 'middlePhrase') { %>
+            <button name="action" value="-1">previous</button>
+    <% }
+         if (firstOrLast != 'last' && firstOrLast != 'middlePhrase' ) { %>
+             <button name="action" value="1">next</button>
+    <% } %>
             <br>
             <% for(var i=0; i < Category.length; i++) {%>
                     <button name="category" value="<%= i %>"><%= Category[i] %></button>
