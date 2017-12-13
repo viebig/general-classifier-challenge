@@ -10,6 +10,7 @@ const txtFile = fs.readFileSync(__dirname + '/in/messages.txt', 'utf8');
 const csvFile = fs.readFileSync(__dirname + '/in/classification.csv', 'utf8');
 const outputFile = fs.createWriteStream(__dirname + '/out/outputFile.csv');
 
+let classifiedPhrase = [];
 let data = csvFile.split('\n');
 let categoryDefined = '';
 let subCategoryDefined = '';
@@ -48,7 +49,6 @@ app.post('/', urlencodedParser, function (req, res) {
     let cats = req.body.category;
     let skip = req.body.skip;
     position = 'middlePrhase';
-    console.log(req.body);
     if (skip) {
         writeIntoFile(0, 0, 0);
         category = categoryHeaders;
@@ -81,17 +81,22 @@ app.post('/', urlencodedParser, function (req, res) {
             case 2:
                 subCategoryDefined = cats;
                 position = 'middlePrhase';
+                classifiedPhrase[number] = txtLine(txtFile, number);
                 number++;
                 cancelSkip = false;
                 break;
-            default:
+                default:
                 break;
+            }
+        } else {
+            category = categoryHeaders;
         }
-    } else {
-        category = categoryHeaders;
-    }
 
     let PhraseResult = txtLine(txtFile, number);
+    if (PhraseResult in classifiedPhrase) {
+        console.log(PhraseResult);
+        PhraseResult = "Frase já classificada";
+    }
     let lastPhrase = txtLine(txtFile, number - 1);
     if (PhraseResult == undefined) {
         number--;
@@ -99,7 +104,7 @@ app.post('/', urlencodedParser, function (req, res) {
         position = 'last';
     }
     if (countCategory == 2 && subCategory) {
-        writeIntoFile(lastPhrase, categoryHeaders[categoryDefined], subCategory[subCategoryDefined]);
+        writeIntoFile(classifiedPhrase, categoryHeaders[categoryDefined], subCategory[subCategoryDefined]);
         category = categoryHeaders;
         countCategory = 0;
     }
