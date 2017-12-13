@@ -48,15 +48,16 @@ app.post('/', urlencodedParser, function (req, res) {
     let cats = req.body.category;
     let skip = req.body.skip;
     position = 'middlePrhase';
-
+    console.log(req.body);
     if (skip) {
         writeIntoFile(0, 0, 0);
         category = categoryHeaders;
         countCategory = 0;
         number++;
     }
-
+    
     if (turn) {
+        cancelSkip = false;
         number = parseInt(number) + parseInt(turn);
         if (number == -1) {
             number = 0;
@@ -70,8 +71,8 @@ app.post('/', urlencodedParser, function (req, res) {
         if (countCategory == 0) {
             category = bringSub(subsCategory, cats);
         }
-        subCategory = category;
         cancelSkip = true;
+        subCategory = category;
         countCategory++;
         switch (countCategory) {
             case 1:
@@ -79,6 +80,7 @@ app.post('/', urlencodedParser, function (req, res) {
                 break;
             case 2:
                 subCategoryDefined = cats;
+                position = 'middlePrhase';
                 number++;
                 cancelSkip = false;
                 break;
