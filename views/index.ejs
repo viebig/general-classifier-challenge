@@ -4,7 +4,27 @@
     <meta charset="utf-8">
     <title>Classifier</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../../node_modules/dist/hotkeys.min.js"></script>
+    <script type="text/javascript">
+    window.onload = function() {
+        window.onkeypress = function() {
+            previous(event);
+        }
+    }
+    function previous(e) {
+        var keynum = e.keyCode;
+
+        if(keynum === 97) {
+            var left = true;    
+        }
+        if(keynum === 100) {
+            var right = true;
+        }
+        if(keynum === 32) {
+            var space = true;
+        }
+
+    }
+    </script>
     <style>
         body {
             background-color: #777;
@@ -39,7 +59,9 @@
             <%= prhase %>
         </div>
     <%  if (firstOrLast != 'first' && firstOrLast != 'middlePhrase') { %>
+        <% if(left){%>
             <button name="action" value="-1">previous</button>
+        <% } %>    
     <% }
         if (firstOrLast != 'last' && firstOrLast != 'middlePhrase' ) { %>
              <button name="action" value="1">next</button>
