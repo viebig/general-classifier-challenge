@@ -2,7 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const csv = require('csv');
 const express = require('express');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 const app = express();
 const jsonParser = bodyParser.json()
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -40,6 +40,7 @@ const subsCategory = categoryHeaders.reduce((arr, type) => {
 
 app.get('/', function (req, res) {
     let PhraseResult = txtLine(txtFile, number);
+    classifiedPhrase[number] = '';
     position = 'first';
     res.render('index', { prhase: PhraseResult, Category: categoryHeaders, SkipFail: cancelSkip, firstOrLast : position });
 });
@@ -93,8 +94,8 @@ app.post('/', urlencodedParser, function (req, res) {
         }
 
     let PhraseResult = txtLine(txtFile, number);
-    if (PhraseResult in classifiedPhrase) {
-        console.log(PhraseResult);
+    console.log(classifiedPhrase.indexOf(PhraseResult) +1);
+    if (classifiedPhrase.indexOf(PhraseResult) +1) {
         PhraseResult = "Frase já classificada";
     }
     let lastPhrase = txtLine(txtFile, number - 1);

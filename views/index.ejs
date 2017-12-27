@@ -1,46 +1,26 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="utf-8">
     <title>Classifier</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script type="text/javascript">
-    window.onload = function() {
-        window.onkeypress = function() {
-            previous(event);
-        }
-    }
-    function previous(e) {
-        var keynum = e.keyCode;
-
-        if(keynum === 97) {
-            var left = true;    
-        }
-        if(keynum === 100) {
-            var right = true;
-        }
-        if(keynum === 32) {
-            var space = true;
-        }
-
-    }
-    </script>
     <style>
         body {
             background-color: #777;
             font-family: Arial, Helvetica, sans-serif;
             font-weight: bold;
             font-size: 25pt;
-            color:#fff;
+            color: #fff;
             text-align: center;
         }
-        button{
+        button {
             padding: 20px;
             border-radius: 5px;
             margin: 10px;
             display: inline;
         }
-        .box{
+        .box {
             border: 2px solid #000;
             background-color: #fff;
             color: #000;
@@ -49,7 +29,47 @@
             margin: auto;
         }
     </style>
+    <script>
+      document.addEventListener('keydown', function (event) {
+        switch (event.keyCode) {
+            case 37:
+                if(document.getElementById("left")) {
+                    document.getElementById("left").click();
+                }
+                break;
+            case 39:
+                if(document.getElementById("right")) {
+                    document.getElementById("right").click();
+                }
+                break;
+            case 32:
+                if (document.getElementById("skip")) {
+                    document.getElementById("skip").click();
+                }
+                break;
+            case 49:
+                if (document.getElementById("category0")) {
+                    document.getElementById("category0").click();
+                }
+                break;
+            case 50:
+                if (document.getElementById("category1")) {
+                    document.getElementById("category1").click();
+                }
+            break;
+            case 51:
+                if (document.getElementById("category2")) {
+                    document.getElementById("category2").click();
+                }
+                break;
+        
+            default:
+                break;
+        }
+        }, true);
+    </script>
 </head>
+
 <body>
     <h1>GENERAL CLASSIFIER</h1>
     <p>o melhor classificador que você verá hoje</p>
@@ -58,21 +78,23 @@
         <div class="box">
             <%= prhase %>
         </div>
-    <%  if (firstOrLast != 'first' && firstOrLast != 'middlePhrase') { %>
-        <% if(left){%>
-            <button name="action" value="-1">previous</button>
-        <% } %>    
-    <% }
+        <%  if (firstOrLast != 'first' && firstOrLast != 'middlePhrase') { %>
+            <button name="action" value="-1" id='left' >previous</button>
+        <% }
         if (firstOrLast != 'last' && firstOrLast != 'middlePhrase' ) { %>
-             <button name="action" value="1">next</button>
-             <br>
-             <% for(var i=0; i < Category.length; i++) {%>
-                <button name="category" value="<%= i %>"><%= Category[i] %></button>
-                <% } %>
-                <% if(!SkipFail){%>
-                    <button name="skip" value="true">skip</button>
-                    <% } %>
+            <button name="action" value="1" id='right'>next</button>
+            <br>
+            <% for(var i=0; i < Category.length; i++)
+            {%>
+                <button name="category" value="<%= i %>" id='category<%= i %>'>
+                    <%= Category[i] %>
+                </button>
+            <% } %>
+            <% if(!SkipFail){%>
+                <button name="skip" value="true" id='skip'>skip</button>
+            <% } %>
         <% } %>
-        </form>
+    </form>
 </body>
+
 </html>
