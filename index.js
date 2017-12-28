@@ -19,6 +19,7 @@ let cancelSkip = false;
 let countCategory = 0;
 let number = 0;
 let position = '';
+let classified = false;
 
 
 app.set('view engine', 'ejs');
@@ -40,9 +41,8 @@ const subsCategory = categoryHeaders.reduce((arr, type) => {
 
 app.get('/', function (req, res) {
     let PhraseResult = txtLine(txtFile, number);
-    classifiedPhrase[number] = '';
     position = 'first';
-    res.render('index', { prhase: PhraseResult, Category: categoryHeaders, SkipFail: cancelSkip, firstOrLast : position });
+    res.render('index', { prhase: PhraseResult, Category: categoryHeaders, SkipFail: cancelSkip, firstOrLast: position, phraseClassified: classified });
 });
 
 app.post('/', urlencodedParser, function (req, res) {
@@ -50,13 +50,14 @@ app.post('/', urlencodedParser, function (req, res) {
     let cats = req.body.category;
     let skip = req.body.skip;
     position = 'middlePrhase';
+    classified = false;
     if (skip) {
         writeIntoFile(0, 0, 0);
         category = categoryHeaders;
         countCategory = 0;
+        classifiedPhrase[number] = 'escaped phrase';
         number++;
     }
-    
     if (turn) {
         cancelSkip = false;
         number = parseInt(number) + parseInt(turn);
@@ -67,7 +68,6 @@ app.post('/', urlencodedParser, function (req, res) {
     if (number == 0) {
         position = 'first';
     }
-    
     if (cats) {
         if (countCategory == 0) {
             category = bringSub(subsCategory, cats);
@@ -92,24 +92,38 @@ app.post('/', urlencodedParser, function (req, res) {
         } else {
             category = categoryHeaders;
         }
-
     let PhraseResult = txtLine(txtFile, number);
-    console.log(classifiedPhrase.indexOf(PhraseResult) +1);
+    let lastPhrase = txtLine(txtFile, number - 1);
     if (classifiedPhrase.indexOf(PhraseResult) +1) {
         PhraseResult = "Frase já classificada";
+        classified = true;
     }
-    let lastPhrase = txtLine(txtFile, number - 1);
     if (PhraseResult == undefined) {
-        number--;
         PhraseResult = "fim do arquivo alcançado";
         position = 'last';
+    }
+    if (classifiedPhrase[number] == 'escaped phrase') {
+        PhraseResult = "frase 'skipada'";
+        classified = true;
     }
     if (countCategory == 2 && subCategory) {
         writeIntoFile(classifiedPhrase, categoryHeaders[categoryDefined], subCategory[subCategoryDefined]);
         category = categoryHeaders;
         countCategory = 0;
     }
-    res.render('index', { prhase: PhraseResult, Category: category, SkipFail: cancelSkip, firstOrLast: position });
+
+    // trabalhar neste trecho
+    // if (!classifiedPhrase[number]) {
+    //     classifiedPhrase[number] = '';
+    // }
+    // if (classifiedPhrase && !classifiedPhrase.indexOf('')) {
+    //     console.log("posição vazia");
+    // }
+    // if (classifiedPhrase && !classifiedPhrase.indexOf('')) {
+    //     console.log("sim, voce conseguiu");
+    // }
+
+    res.render('index', { prhase: PhraseResult, Category: category, SkipFail: cancelSkip, firstOrLast: position, phraseClassified: classified });
     res.end();
 });
 

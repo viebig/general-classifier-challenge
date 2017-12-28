@@ -84,16 +84,17 @@
         if (firstOrLast != 'last' && firstOrLast != 'middlePhrase' ) { %>
             <button name="action" value="1" id='right'>next</button>
             <br>
-            <% for(var i=0; i < Category.length; i++)
-            {%>
-                <button name="category" value="<%= i %>" id='category<%= i %>'>
-                    <%= Category[i] %>
-                </button>
-            <% } %>
-            <% if(!SkipFail){%>
-                <button name="skip" value="true" id='skip'>skip</button>
-            <% } %>
-        <% } %>
+            <%if(!phraseClassified) {
+                for(var i=0; i < Category.length; i++) {%>
+                    <button name="category" value="<%= i %>" id='category<%= i %>'>
+                        <%= Category[i] %>
+                    </button>
+                <% }
+                if(!SkipFail){%>
+                    <button name="skip" value="true" id='skip'>skip</button>
+                <% } 
+            }            
+        } %>
     </form>
 </body>
 
