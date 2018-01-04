@@ -9,7 +9,7 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false })
 const txtFile = fs.readFileSync(__dirname + '/in/messages.txt', 'utf8');
 const csvFile = fs.readFileSync(__dirname + '/in/classification.csv', 'utf8');
 const outputFile = fs.createWriteStream(__dirname + '/out/outputFile.csv');
-const pathLocation = __dirname + '/out';
+let pathLocation = __dirname + '/out/';
 
 let classifiedPhrase = [];
 let data = csvFile.split('\n');
@@ -45,7 +45,7 @@ const subsCategory = categoryHeaders.reduce((arr, type) => {
 app.get('/', function (req, res) {
     let PhraseResult = txtLine(txtFile, number);
     position = 'first';
-    res.render('index', { prhase: PhraseResult, Category: categoryHeaders, SkipFail: cancelSkip, firstOrLast: position, phraseClassified: classified });
+    res.render('index', { prhase: PhraseResult, Category: categoryHeaders, SkipFail: cancelSkip, firstOrLast: position, phraseClassified: classified, count: 1 });
 });
 
 app.post('/', urlencodedParser, function (req, res) {
@@ -68,6 +68,7 @@ app.post('/', urlencodedParser, function (req, res) {
             number = 0;
         }
     }
+    let counter = number + 1;
     if (number == 0) {
         position = 'first';
     }
@@ -102,27 +103,34 @@ app.post('/', urlencodedParser, function (req, res) {
         classified = true;
     }
     if (PhraseResult == undefined) {
-        PhraseResult = "fim do arquivo alcançado";
+        PhraseResult = "Fim do arquivo alcançado";
+        counter = '';
         position = 'last';
     }
     if (classifiedPhrase[number] == 'escaped phrase') {
-        PhraseResult = "frase pulada";
+        PhraseResult = "Frase pulada";
         classified = true;
     }
     
     let array = [];
     if (countCategory == 2 && subCategory) {
-        allPhrases = writeIntoFile(classifiedPhrase, categoryHeaders[categoryDefined], subCategory[subCategoryDefined]);
-        array = allPhrases;
+        writeIntoFile(classifiedPhrase, categoryHeaders[categoryDefined], subCategory[subCategoryDefined]);
+        array = classifiedPhrase;
         category = categoryHeaders;
         countCategory = 0;
     }
     
-    console.log(array);
-    if (array.length == arrayCompare.length) {
-        download(pathLocation, outputFile);
-    }
-    res.render('index', { prhase: PhraseResult, Category: category, SkipFail: cancelSkip, firstOrLast: position, phraseClassified: classified });
+    // if (array.length == arrayCompare.length) {
+    //     res.download(pathLocation, 'classified.csv', function (err) {
+    //         if (err) {
+    //             console.log('erro ao tentar baixar o aquivo');
+    //         } else {
+    //             console.log('baixando');
+    //         }
+    //     });
+    // }
+    
+    res.render('index', { prhase: PhraseResult, Category: category, SkipFail: cancelSkip, firstOrLast: position, phraseClassified: classified, count: counter });
     res.end();
 });
 
@@ -139,31 +147,26 @@ function bringSub(array, index) {
 
 function writeIntoFile(txtOutput, firstCategory, category) {
     let outputLine = '';
-    let allPhrases = '';
     if (txtOutput == 0) {
         outputLine = ' \n';
     } else {
         outputLine = '"' + txtOutput + '", ' + firstCategory + '_' + category + '\n';
-    }    
-    allPhrases = outputLine;
-    
+    }        
     outputFile.write(outputLine, 'UTF8');
-    return allPhrases;
 }
 
-let download = function (url, file, cb) {
-    let request = http.get(url, function (response) {
-        response.pipe(file);
-        file.on('finish', function () {
-            file.close(cb);  // close() is async, call cb after close completes.
-        });
-    }).on('error', function (err) { // Handle errors
-        fs.unlink(dest); // Delete the file async. (But we don't check the result)
-        if (cb) cb(err.message);
+app.get('/download', function(req, res, next) {
+    res.download(pathLocation, 'classified.csv', function (err) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log('baixando');
+        }
     });
-};
-
-
+   res.render('download');
+   res.end();
+   next();
+});
 
 app.listen(5000);
 console.log("listen on port 5000!"); 
