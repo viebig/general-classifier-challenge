@@ -117,7 +117,7 @@ app.post('/', urlencodedParser, function (req, res) {
     
     let array = [];
     if (countCategory == 2 && subCategory) {
-        writeIntoFile(classifiedPhrase, categoryHeaders[categoryDefined], subCategory[subCategoryDefined]);
+        writeIntoFile(PhraseResult, categoryHeaders[categoryDefined], subCategory[subCategoryDefined]);
         array = classifiedPhrase;
         category = categoryHeaders;
         countCategory = 0;
@@ -131,9 +131,8 @@ app.post('/', urlencodedParser, function (req, res) {
     res.end();
 });
 
-app.post('/download', function(req, res) {
-    res.render('download');
-   res.end();
+app.get('/download', function(req, res) {
+    res.sendFile(__dirname + '/outputFile.csv');
 });
 
 function txtLine(txtFile, index) {
@@ -156,6 +155,7 @@ function writeIntoFile(txtOutput, firstCategory, category) {
     }        
     outputFile.write(outputLine, 'UTF8');
 }
+
 
 
 app.listen(5000);
