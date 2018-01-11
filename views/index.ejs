@@ -92,9 +92,14 @@
                 <% }
                 if(!SkipFail){%>
                     <button name="skip" value="true" id='skip'>skip</button>
-                <% } 
+                <% }
             }            
         } %>
+        <% if(downloadFile) { %>
+            <a href="./../in/" download>
+                Download the file
+            </a>
+        <% }  %>
     </form>
 </body>
 

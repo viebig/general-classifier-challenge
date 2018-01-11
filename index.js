@@ -22,6 +22,7 @@ let number = 0;
 let position = '';
 let classified = false;
 let arrayCompare = [];
+let Fullfile = false;
 arrayCompare = txtFile.split('\n');
 
 
@@ -45,7 +46,7 @@ const subsCategory = categoryHeaders.reduce((arr, type) => {
 app.get('/', function (req, res) {
     let PhraseResult = txtLine(txtFile, number);
     position = 'first';
-    res.render('index', { prhase: PhraseResult, Category: categoryHeaders, SkipFail: cancelSkip, firstOrLast: position, phraseClassified: classified, count: 1 });
+    res.render('index', { prhase: PhraseResult, Category: categoryHeaders, SkipFail: cancelSkip, firstOrLast: position, phraseClassified: classified, count: 1, downloadFile: Fullfile });
 });
 
 app.post('/', urlencodedParser, function (req, res) {
@@ -102,11 +103,13 @@ app.post('/', urlencodedParser, function (req, res) {
         PhraseResult = "Frase já classificada";
         classified = true;
     }
+
     if (PhraseResult == undefined) {
         PhraseResult = "Fim do arquivo alcançado";
         counter = '';
         position = 'last';
     }
+
     if (classifiedPhrase[number] == 'escaped phrase') {
         PhraseResult = "Frase pulada";
         classified = true;
@@ -120,18 +123,17 @@ app.post('/', urlencodedParser, function (req, res) {
         countCategory = 0;
     }
     
-    // if (array.length == arrayCompare.length) {
-    //     res.download(pathLocation, 'classified.csv', function (err) {
-    //         if (err) {
-    //             console.log('erro ao tentar baixar o aquivo');
-    //         } else {
-    //             console.log('baixando');
-    //         }
-    //     });
-    // }
+    if (array.length == arrayCompare.length) {
+        Fullfile = true;
+    }
     
-    res.render('index', { prhase: PhraseResult, Category: category, SkipFail: cancelSkip, firstOrLast: position, phraseClassified: classified, count: counter });
+    res.render('index', { prhase: PhraseResult, Category: category, SkipFail: cancelSkip, firstOrLast: position, phraseClassified: classified, count: counter, downloadFile: Fullfile });
     res.end();
+});
+
+app.post('/download', function(req, res) {
+    res.render('download');
+   res.end();
 });
 
 function txtLine(txtFile, index) {
@@ -155,18 +157,6 @@ function writeIntoFile(txtOutput, firstCategory, category) {
     outputFile.write(outputLine, 'UTF8');
 }
 
-app.get('/download', function(req, res, next) {
-    res.download(pathLocation, 'classified.csv', function (err) {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log('baixando');
-        }
-    });
-   res.render('download');
-   res.end();
-   next();
-});
 
 app.listen(5000);
 console.log("listen on port 5000!"); 

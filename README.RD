@@ -1,3 +1,4 @@
 npm install
-on shell type nodemon
-on browser localhost:3000
+on shell: nodemon
+on browser: localhost:3000
+Enjoy
