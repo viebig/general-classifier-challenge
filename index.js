@@ -56,7 +56,7 @@ app.post('/', urlencodedParser, function (req, res) {
     let classified  = false;
     let Fullfile    = false;
     let array       = [];
-    position = 'middle';
+    position = '';
     
     if (skip) {
         countCategory = 0;
