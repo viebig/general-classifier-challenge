@@ -76,12 +76,12 @@
     <form action="/" method="POST">
         <label for="phrase"></label>
         <div class="box">
-            <%= count %> <%= prhase %>
+            <%= number %> <%= prhase %>
         </div>
-        <%  if (firstOrLast != 'first' && firstOrLast != 'middlePhrase') { %>
+        <%  if (keyPlace == 'next' && keyPlace != 'middle') { %>
             <button name="action" value="-1" id='left' >previous</button>
         <% }
-        if (firstOrLast != 'last' && firstOrLast != 'middlePhrase' ) { %>
+        if (keyPlace == 'previous' && keyPlace != 'middle' ) { %>
             <button name="action" value="1" id='right'>next</button>
             <br>
             <%if(!phraseClassified) {
@@ -90,7 +90,7 @@
                         <%= Category[i] %>
                     </button>
                 <% }
-                if(!SkipFail){%>
+                if(!skipFail){%>
                     <button name="skip" value="true" id='skip'>skip</button>
                 <% }
             }            
