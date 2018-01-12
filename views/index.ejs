@@ -78,11 +78,11 @@
         <div class="box">
             <%= number %> <%= prhase %>
         </div>
-        <%  if (keyPlace == 'next' && keyPlace != 'middle') { %>
-            <button name="action" value="-1" id='left' >previous</button>
-        <% }
-        if (keyPlace == 'previous' && keyPlace != 'middle' ) { %>
-            <button name="action" value="1" id='right'>next</button>
+        <%  if (keyPlace != 'next' && keyPlace != 'middle') { %>
+                <button name="action" value="-1" id='left' >previous</button>
+            <% }
+            if (keyPlace != 'previous' && keyPlace != 'middle') { %>
+                <button name="action" value="1" id='right'>next</button>
             <br>
             <%if(!phraseClassified) {
                 for(var i=0; i < Category.length; i++) {%>

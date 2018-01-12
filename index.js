@@ -38,12 +38,12 @@ const subsCategory = categoryHeaders.reduce((arr, type) => {
 
 app.get('/', function (req, res) {
     res.render('index', { 
-        prhase: txtFile[count], 
+        prhase: txtFile[count],
         Category: categoryHeaders, 
         skipFail: true, 
         keyPlace: 'previous', 
         phraseClassified: false, 
-        count: 1, 
+        number: 1, 
         downloadFile: false 
     });
 });
@@ -52,9 +52,11 @@ app.post('/', urlencodedParser, function (req, res) {
     let turn        = req.body.action;
     let cats        = req.body.category;
     let skip        = req.body.skip;
-    let position    = 'middle';
+    let counter     = count + 1;
     let classified  = false;
     let Fullfile    = false;
+    let array       = [];
+    position = 'middle';
     
     if (skip) {
         countCategory = 0;
@@ -84,8 +86,7 @@ app.post('/', urlencodedParser, function (req, res) {
             break;
             case 2:
                 subCategoryDefined = cats;
-                position = 'middle';
-                classifiedPhrase[count] = txtFile[count];
+                array = txtFile[count];
                 count++;
                 txtFile[count] = "Frase já classificada";
                 classified = true;
@@ -96,24 +97,21 @@ app.post('/', urlencodedParser, function (req, res) {
         }
     }
 
-    let counter = count+1;
     if (txtFile[count] == undefined) {
         txtFile[count] = "Fim do arquivo alcançado";
         counter = '';
         position = 'next';
     }
 
-    let array = [];
     if (countCategory == 2 && subCategory) {
         writeIntoFile(txtFile[count-1], categoryHeaders[categoryDefined], subCategory[subCategoryDefined]);
-        array = classifiedPhrase;
         countCategory = 0;
     }
-    
+
     if (array.length == txtFile.length) {
         Fullfile = true;
     }
-    
+
     res.render('index', {
         prhase: txtFile[count], 
         Category: categoryHeaders, 
