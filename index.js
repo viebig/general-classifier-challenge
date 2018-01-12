@@ -4,10 +4,10 @@ const bodyParser = require('body-parser');
 const app = express();
 const jsonParser = bodyParser.json()
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
-const txtFile = fs.readFileSync(__dirname + '/in/messages.txt', 'utf8');
 const csvFile = fs.readFileSync(__dirname + '/in/classification.csv', 'utf8');
 const outputFile = fs.createWriteStream(__dirname + '/out/outputFile.csv');
 
+let txtFile = fs.readFileSync(__dirname + '/in/messages.txt', 'utf8');
 let classifiedPhrase = [];
 let data = csvFile.split('\n');
 let categoryDefined = '';
@@ -18,9 +18,9 @@ let countCategory = 0;
 let number = 0;
 let position = '';
 let classified = false;
-let arrayCompare = [];
 let Fullfile = false;
-arrayCompare = txtFile.split('\n');
+txtFile = txtFile.split("\n");
+
 app.set('view engine', 'ejs');
 
 
@@ -42,7 +42,7 @@ const subsCategory = categoryHeaders.reduce((arr, type) => {
 
 
 app.get('/', function (req, res) {
-    let PhraseResult = txtLine(txtFile, number);
+    let PhraseResult = txtFile[number];
     position = 'first';
     res.render('index', { 
         prhase: PhraseResult, 
@@ -93,7 +93,7 @@ app.post('/', urlencodedParser, function (req, res) {
             case 2:
                 subCategoryDefined = cats;
                 position = 'middlePrhase';
-                classifiedPhrase[number] = txtLine(txtFile, number);
+                classifiedPhrase[number] = txtFile[number];
                 number++;
                 cancelSkip = false;
                 break;
@@ -103,8 +103,8 @@ app.post('/', urlencodedParser, function (req, res) {
         } else {
             category = categoryHeaders;
         }
-    let PhraseResult = txtLine(txtFile, number);
-    let lastPhrase = txtLine(txtFile, number -1);
+    let PhraseResult = txtFile[number];
+    let lastPhrase = txtFile[number-1];
     if (classifiedPhrase.indexOf(PhraseResult) +1) {
         PhraseResult = "Frase já classificada";
         classified = true;
@@ -129,7 +129,7 @@ app.post('/', urlencodedParser, function (req, res) {
         countCategory = 0;
     }
     
-    if (array.length == arrayCompare.length) {
+    if (array.length == txtFile.length) {
         Fullfile = true;
     }
     
@@ -145,16 +145,10 @@ app.post('/', urlencodedParser, function (req, res) {
     res.end();
 });
 
-
 app.get('/download', function(req, res) {
-    res.sendFile(__dirname + '/outputFile.csv');
+    res.sendFile(__dirname + '/out/outputFile.csv');
 });
 
-function txtLine(txtFile, index) {
-    let txtParse = txtFile.split("\n");
-    let txtElement = txtParse[index];
-    return txtElement;
-}
 
 function writeIntoFile(txtOutput, firstCategory, category) {
     let outputLine = '';
