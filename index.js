@@ -1,28 +1,24 @@
-const fs = require('fs');
-const express = require('express');
-const bodyParser = require('body-parser');
-const app = express();
-const jsonParser = bodyParser.json()
-const urlencodedParser = bodyParser.urlencoded({ extended: false })
-const csvFile = fs.readFileSync(__dirname + '/in/classification.csv', 'utf8');
-const outputFile = fs.createWriteStream(__dirname + '/out/outputFile.csv');
+const fs                = require('fs');
+const express           = require('express');
+const bodyParser        = require('body-parser');
+const app               = express();
+const jsonParser        = bodyParser.json()
+const urlencodedParser  = bodyParser.urlencoded({ extended: false })
+const csvFile           = fs.readFileSync(__dirname + '/in/classification.csv', 'utf8');
+const outputFile        = fs.createWriteStream(__dirname + '/out/outputFile.csv');
 
-let txtFile = fs.readFileSync(__dirname + '/in/messages.txt', 'utf8');
-let classifiedPhrase = [];
-let data = csvFile.split('\n');
-let categoryDefined = '';
-let subCategoryDefined = '';
-let subCategory = '';
-let cancelSkip = false;
-let countCategory = 0;
-let number = 0;
-let position = '';
-let classified = false;
-let Fullfile = false;
-txtFile = txtFile.split("\n");
+let txtFile             = fs.readFileSync(__dirname + '/in/messages.txt', 'utf8');
+txtFile                 = txtFile.split("\n");
+let classifiedPhrase    = [];
+let data                = csvFile.split('\n');
+let categoryDefined     = '';
+let subCategoryDefined  = '';
+let subCategory         = '';
+let cancelSkip          = false;
+let countCategory       = 0;
+let count               = 0;
 
 app.set('view engine', 'ejs');
-
 
 const types = {};
 data.forEach(function (row) {
@@ -40,92 +36,77 @@ const subsCategory = categoryHeaders.reduce((arr, type) => {
     );
 }, []);
 
-
 app.get('/', function (req, res) {
-    let PhraseResult = txtFile[number];
-    position = 'first';
     res.render('index', { 
-        prhase: PhraseResult, 
+        prhase: txtFile[count], 
         Category: categoryHeaders, 
-        SkipFail: cancelSkip, 
-        firstOrLast: position, 
-        phraseClassified: classified, 
+        skipFail: true, 
+        keyPlace: 'previous', 
+        phraseClassified: false, 
         count: 1, 
-        downloadFile: Fullfile 
+        downloadFile: false 
     });
 });
 
 app.post('/', urlencodedParser, function (req, res) {
-    let turn = req.body.action;
-    let cats = req.body.category;
-    let skip = req.body.skip;
-    position = 'middlePrhase';
-    classified = false;
+    let turn        = req.body.action;
+    let cats        = req.body.category;
+    let skip        = req.body.skip;
+    let position    = 'middle';
+    let classified  = false;
+    let Fullfile    = false;
     
     if (skip) {
-        category = categoryHeaders;
         countCategory = 0;
-        classifiedPhrase[number] = 'escaped phrase';
-        number++;
+        txtFile[count] = 'Frase pulada';
+        classified = true;
+        count++;
     }
+
     if (turn) {
         cancelSkip = false;
-        number = parseInt(number) + parseInt(turn);
-        if (number == -1) {
-            number = 0;
+        count = parseInt(count) + parseInt(turn);
+        if (count == -1) {
+            count = 0;
+            position = 'previous';
         }
     }
-    let counter = number + 1;
-    if (number == 0) {
-        position = 'first';
-    }
+
     if (cats) {
         if (countCategory == 0) {
-            category = subsCategory[cats];
+            subCategory = subsCategory[cats];
         }
         cancelSkip = true;
-        subCategory = category;
         countCategory++;
         switch (countCategory) {
             case 1:
                 categoryDefined = cats;
-                break;
+            break;
             case 2:
                 subCategoryDefined = cats;
-                position = 'middlePrhase';
-                classifiedPhrase[number] = txtFile[number];
-                number++;
+                position = 'middle';
+                classifiedPhrase[count] = txtFile[count];
+                count++;
+                txtFile[count] = "Frase já classificada";
+                classified = true;
                 cancelSkip = false;
-                break;
-                default:
-                break;
-            }
-        } else {
-            category = categoryHeaders;
+            break;
+            default:
+            break;
         }
-    let PhraseResult = txtFile[number];
-    let lastPhrase = txtFile[number-1];
-    if (classifiedPhrase.indexOf(PhraseResult) +1) {
-        PhraseResult = "Frase já classificada";
-        classified = true;
     }
 
-    if (PhraseResult == undefined) {
-        PhraseResult = "Fim do arquivo alcançado";
+    let counter = count+1;
+    if (txtFile[count] == undefined) {
+        txtFile[count] = "Fim do arquivo alcançado";
         counter = '';
-        position = 'last';
+        position = 'next';
     }
 
-    if (classifiedPhrase[number] == 'escaped phrase') {
-        PhraseResult = "Frase pulada";
-        classified = true;
-    }
-    
     let array = [];
     if (countCategory == 2 && subCategory) {
-        writeIntoFile(lastPhrase, categoryHeaders[categoryDefined], subCategory[subCategoryDefined]);
+        writeIntoFile(txtFile[count-1], categoryHeaders[categoryDefined], subCategory[subCategoryDefined]);
         array = classifiedPhrase;
-        category = categoryHeaders;
         countCategory = 0;
     }
     
@@ -134,12 +115,12 @@ app.post('/', urlencodedParser, function (req, res) {
     }
     
     res.render('index', {
-        prhase: PhraseResult, 
-        Category: category, 
-        SkipFail: cancelSkip, 
-        firstOrLast: position, 
+        prhase: txtFile[count], 
+        Category: categoryHeaders, 
+        skipFail: cancelSkip, 
+        keyPlace: position, 
         phraseClassified: classified, 
-        count: counter, 
+        number: counter, 
         downloadFile: Fullfile 
     });
     res.end();
@@ -148,7 +129,6 @@ app.post('/', urlencodedParser, function (req, res) {
 app.get('/download', function(req, res) {
     res.sendFile(__dirname + '/out/outputFile.csv');
 });
-
 
 function writeIntoFile(txtOutput, firstCategory, category) {
     let outputLine = '';
