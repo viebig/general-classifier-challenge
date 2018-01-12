@@ -1,6 +1,4 @@
-const http = require('http');
 const fs = require('fs');
-const csv = require('csv');
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
@@ -9,7 +7,6 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false })
 const txtFile = fs.readFileSync(__dirname + '/in/messages.txt', 'utf8');
 const csvFile = fs.readFileSync(__dirname + '/in/classification.csv', 'utf8');
 const outputFile = fs.createWriteStream(__dirname + '/out/outputFile.csv');
-let pathLocation = __dirname + '/out/';
 
 let classifiedPhrase = [];
 let data = csvFile.split('\n');
@@ -24,9 +21,9 @@ let classified = false;
 let arrayCompare = [];
 let Fullfile = false;
 arrayCompare = txtFile.split('\n');
-
-
 app.set('view engine', 'ejs');
+
+
 const types = {};
 data.forEach(function (row) {
     if (!row.trim()) return;
@@ -43,10 +40,19 @@ const subsCategory = categoryHeaders.reduce((arr, type) => {
     );
 }, []);
 
+
 app.get('/', function (req, res) {
     let PhraseResult = txtLine(txtFile, number);
     position = 'first';
-    res.render('index', { prhase: PhraseResult, Category: categoryHeaders, SkipFail: cancelSkip, firstOrLast: position, phraseClassified: classified, count: 1, downloadFile: Fullfile });
+    res.render('index', { 
+        prhase: PhraseResult, 
+        Category: categoryHeaders, 
+        SkipFail: cancelSkip, 
+        firstOrLast: position, 
+        phraseClassified: classified, 
+        count: 1, 
+        downloadFile: Fullfile 
+    });
 });
 
 app.post('/', urlencodedParser, function (req, res) {
@@ -75,7 +81,7 @@ app.post('/', urlencodedParser, function (req, res) {
     }
     if (cats) {
         if (countCategory == 0) {
-            category = bringSub(subsCategory, cats);
+            category = subsCategory[cats];
         }
         cancelSkip = true;
         subCategory = category;
@@ -117,7 +123,7 @@ app.post('/', urlencodedParser, function (req, res) {
     
     let array = [];
     if (countCategory == 2 && subCategory) {
-        writeIntoFile(PhraseResult, categoryHeaders[categoryDefined], subCategory[subCategoryDefined]);
+        writeIntoFile(lastPhrase, categoryHeaders[categoryDefined], subCategory[subCategoryDefined]);
         array = classifiedPhrase;
         category = categoryHeaders;
         countCategory = 0;
@@ -127,9 +133,18 @@ app.post('/', urlencodedParser, function (req, res) {
         Fullfile = true;
     }
     
-    res.render('index', { prhase: PhraseResult, Category: category, SkipFail: cancelSkip, firstOrLast: position, phraseClassified: classified, count: counter, downloadFile: Fullfile });
+    res.render('index', {
+        prhase: PhraseResult, 
+        Category: category, 
+        SkipFail: cancelSkip, 
+        firstOrLast: position, 
+        phraseClassified: classified, 
+        count: counter, 
+        downloadFile: Fullfile 
+    });
     res.end();
 });
+
 
 app.get('/download', function(req, res) {
     res.sendFile(__dirname + '/outputFile.csv');
@@ -141,22 +156,15 @@ function txtLine(txtFile, index) {
     return txtElement;
 }
 
-function bringSub(array, index) {
-    let subCategory = array[index];
-    return subCategory;
-}
-
 function writeIntoFile(txtOutput, firstCategory, category) {
     let outputLine = '';
     if (txtOutput == 0) {
-        outputLine = ' \n';
+        outputLine = '\n';
     } else {
         outputLine = '"' + txtOutput + '", ' + firstCategory + '_' + category + '\n';
     }        
     outputFile.write(outputLine, 'UTF8');
 }
-
-
 
 app.listen(5000);
 console.log("listen on port 5000!"); 
