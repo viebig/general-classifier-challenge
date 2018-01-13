@@ -84,7 +84,7 @@
             if (keyPlace != 'next' && keyPlace != 'middle') { %>
                 <button name="action" value="1" id='right'>next</button>
             <br>
-            <%if(!phraseClassified) {
+            <%if(phraseClassified) {
                 for(var i=0; i < Category.length; i++) {%>
                     <button name="category" value="<%= i %>" id='category<%= i %>'>
                         <%= Category[i] %>

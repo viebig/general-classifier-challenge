@@ -17,7 +17,8 @@ let subCategory         = '';
 let cancelSkip          = false;
 let countCategory       = 0;
 let count               = 0;
-
+let counter             = 1;
+let phrase              = '';
 app.set('view engine', 'ejs');
 
 const types = {};
@@ -42,8 +43,8 @@ app.get('/', function (req, res) {
         Category: categoryHeaders, 
         skipFail: true, 
         keyPlace: 'previous', 
-        phraseClassified: false, 
-        number: 1, 
+        phraseClassified: true, 
+        number: counter, 
         downloadFile: false 
     });
 });
@@ -52,8 +53,7 @@ app.post('/', urlencodedParser, function (req, res) {
     let turn        = req.body.action;
     let cats        = req.body.category;
     let skip        = req.body.skip;
-    let counter     = count + 1;
-    let classified  = false;
+    let classified  = true;
     let Fullfile    = false;
     let array       = [];
     position = '';
@@ -61,7 +61,6 @@ app.post('/', urlencodedParser, function (req, res) {
     if (skip) {
         countCategory = 0;
         txtFile[count] = 'Frase pulada';
-        classified = true;
         count++;
     }
 
@@ -70,15 +69,17 @@ app.post('/', urlencodedParser, function (req, res) {
         count = parseInt(count) + parseInt(turn);
         if (count == -1) {
             count = 0;
-            position = 'previous';
         }
+    }
+    if (count == 0) {
+        position = 'previous';
     }
 
     if (cats) {
         if (countCategory == 0) {
             subCategory = subsCategory[cats];
         }
-        cancelSkip = true;
+        // cancelSkip = true;
         countCategory++;
         switch (countCategory) {
             case 1:
@@ -87,21 +88,28 @@ app.post('/', urlencodedParser, function (req, res) {
             case 2:
                 subCategoryDefined = cats;
                 array = txtFile[count];
-                count++;
                 txtFile[count] = "Frase já classificada";
-                classified = true;
+                count++;
+                classified = false;
                 cancelSkip = false;
             break;
             default:
             break;
         }
     }
-
-    if (txtFile[count] == undefined) {
-        txtFile[count] = "Fim do arquivo alcançado";
+    
+    counter = count + 1;
+    phrase = txtFile[count];
+    if (phrase == undefined) {
+        phrase = "Fim do arquivo alcançado";
         counter = '';
         position = 'next';
     }
+
+    if (phrase == 'Frase pulada' || phrase == 'Frase já classificada') {
+        classified = false;
+    }
+
 
     if (countCategory == 2 && subCategory) {
         writeIntoFile(txtFile[count-1], categoryHeaders[categoryDefined], subCategory[subCategoryDefined]);
@@ -112,8 +120,9 @@ app.post('/', urlencodedParser, function (req, res) {
         Fullfile = true;
     }
 
+    console.log('fraseStatus', classified);
     res.render('index', {
-        prhase: txtFile[count], 
+        prhase: phrase, 
         Category: categoryHeaders, 
         skipFail: cancelSkip, 
         keyPlace: position, 
