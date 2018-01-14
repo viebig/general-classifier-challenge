@@ -79,23 +79,23 @@
             <%= number %> <%= prhase %>
         </div>
         <%  if (keyPlace != 'previous' && keyPlace != 'middle') { %>
-                <button name="action" value="-1" id='left' >previous</button>
-            <% }
-            if (keyPlace != 'next' && keyPlace != 'middle') { %>
-                <button name="action" value="1" id='right'>next</button>
+            <button name="action" value="-1" id='left' >previous</button>
+        <% }
+        if (keyPlace != 'next' && keyPlace != 'middle') { %>
+            <button name="action" value="1" id='right'>next</button>
             <br>
-            <%if(phraseClassified) {
-                for(var i=0; i < Category.length; i++) {%>
-                    <button name="category" value="<%= i %>" id='category<%= i %>'>
-                        <%= Category[i] %>
-                    </button>
-                <% }
-                if(!skipFail){%>
-                    <button name="skip" value="true" id='skip'>skip</button>
-                <% }
-            }            
-        } %>
-        <% if(downloadFile) { %>
+        <% } %>
+        <%if(phraseClassified) {
+            for(var i=0; i < Category.length; i++) {%>
+                <button name="category" value="<%= i %>" id='category<%= i %>'>
+                    <%= Category[i] %>
+                </button>
+            <% }
+            if(!skipFail){%>
+                <button name="skip" value="true" id='skip'>skip</button>
+            <% }
+        }            
+        if(downloadFile) { %>
             <a href="/download" target="_blank" download>
                 Download the file
             </a>

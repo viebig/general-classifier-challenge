@@ -2,13 +2,15 @@ const fs                = require('fs');
 const express           = require('express');
 const bodyParser        = require('body-parser');
 const app               = express();
-const jsonParser        = bodyParser.json()
-const urlencodedParser  = bodyParser.urlencoded({ extended: false })
+const jsonParser        = bodyParser.json();
+const urlencodedParser  = bodyParser.urlencoded({ extended: false });
 const csvFile           = fs.readFileSync(__dirname + '/in/classification.csv', 'utf8');
 const outputFile        = fs.createWriteStream(__dirname + '/out/outputFile.csv');
 
 let txtFile             = fs.readFileSync(__dirname + '/in/messages.txt', 'utf8');
+let phrase              = [];
 txtFile                 = txtFile.split("\n");
+phrase                  = txtFile;
 let classifiedPhrase    = [];
 let data                = csvFile.split('\n');
 let categoryDefined     = '';
@@ -18,7 +20,6 @@ let cancelSkip          = false;
 let countCategory       = 0;
 let count               = 0;
 let counter             = 1;
-let phrase              = '';
 app.set('view engine', 'ejs');
 
 const types = {};
@@ -38,29 +39,28 @@ const subsCategory = categoryHeaders.reduce((arr, type) => {
 }, []);
 
 app.get('/', function (req, res) {
-    res.render('index', { 
+    res.render('index', {
         prhase: txtFile[count],
-        Category: categoryHeaders, 
-        skipFail: true, 
-        keyPlace: 'previous', 
-        phraseClassified: true, 
-        number: counter, 
-        downloadFile: false 
+        Category: categoryHeaders,
+        skipFail: true,
+        keyPlace: 'previous',
+        phraseClassified: true,
+        number: counter,
+        downloadFile: false
     });
 });
 
+let array       = [];
 app.post('/', urlencodedParser, function (req, res) {
     let turn        = req.body.action;
     let cats        = req.body.category;
     let skip        = req.body.skip;
     let classified  = true;
     let Fullfile    = false;
-    let array       = [];
     position = '';
-    
     if (skip) {
         countCategory = 0;
-        txtFile[count] = 'Frase pulada';
+        phrase[count] = 'Frase pulada';
         count++;
     }
 
@@ -79,50 +79,51 @@ app.post('/', urlencodedParser, function (req, res) {
         if (countCategory == 0) {
             subCategory = subsCategory[cats];
         }
-        // cancelSkip = true;
         countCategory++;
         switch (countCategory) {
             case 1:
-                categoryDefined = cats;
+            categoryDefined = cats;
+            categoryHeaders = subCategory;
+            position = 'middle';
             break;
             case 2:
-                subCategoryDefined = cats;
-                array = txtFile[count];
-                txtFile[count] = "Frase já classificada";
-                count++;
-                classified = false;
-                cancelSkip = false;
+            subCategoryDefined = cats;
+            phrase[count] = "Frase já classificada";
+            array[count] = 'completed';
+            categoryHeaders = Object.keys(types);
+            count++;
+            cancelSkip = false;
+            position = '';
             break;
             default:
             break;
         }
     }
-    
+
+    phraseRender = phrase[count];
     counter = count + 1;
-    phrase = txtFile[count];
-    if (phrase == undefined) {
-        phrase = "Fim do arquivo alcançado";
+    if (phraseRender == undefined) {
+        phraseRender = "Fim do arquivo alcançado";
         counter = '';
         position = 'next';
-    }
-
-    if (phrase == 'Frase pulada' || phrase == 'Frase já classificada') {
         classified = false;
     }
-
+    if (phraseRender == 'Frase pulada' || phraseRender == 'Frase já classificada') {
+            position = '';
+            classified = false;
+    }
 
     if (countCategory == 2 && subCategory) {
         writeIntoFile(txtFile[count-1], categoryHeaders[categoryDefined], subCategory[subCategoryDefined]);
         countCategory = 0;
     }
-
+    
     if (array.length == txtFile.length) {
         Fullfile = true;
     }
 
-    console.log('fraseStatus', classified);
     res.render('index', {
-        prhase: phrase, 
+        prhase: phraseRender, 
         Category: categoryHeaders, 
         skipFail: cancelSkip, 
         keyPlace: position, 
@@ -147,5 +148,5 @@ function writeIntoFile(txtOutput, firstCategory, category) {
     outputFile.write(outputLine, 'UTF8');
 }
 
-app.listen(5000);
-console.log("listen on port 5000!"); 
+app.listen(3000);
+console.log("listen on port 3000!"); 
