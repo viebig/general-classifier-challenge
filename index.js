@@ -92,7 +92,7 @@ app.post('/', urlencodedParser, function (req, res) {
             case 2:
             subCategoryDefined = cats;
             categoryHeaders = Object.keys(types);
-            writeIntoFile(txtFile[count-1], categoryHeaders[categoryDefined], subCategory[subCategoryDefined]);
+            writeIntoFile(txtFile[count], categoryHeaders[categoryDefined], subCategory[subCategoryDefined]);
             countCategory = 0;
             phrase[count] = "Frase já classificada";
             array[count] = 'completed';
