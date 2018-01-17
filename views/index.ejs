@@ -4,103 +4,120 @@
 <head>
     <meta charset="utf-8">
     <title>Classifier</title>
+    <script language="javascript" src="js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="icon" href="https://www.cphportal.com/Images/ico/checkmark2_128.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            background-color: #777;
-            font-family: Arial, Helvetica, sans-serif;
-            font-weight: bold;
-            font-size: 25pt;
-            color: #fff;
-            text-align: center;
-        }
-        button {
-            padding: 20px;
-            border-radius: 5px;
-            margin: 10px;
-            display: inline;
-        }
-        .box {
-            border: 2px solid #000;
-            background-color: #fff;
-            color: #000;
-            padding: 20px;
-            width: 70%;
-            margin: auto;
-        }
-    </style>
     <script>
-      document.addEventListener('keydown', function (event) {
-        switch (event.keyCode) {
-            case 37:
+        document.addEventListener('keydown', function (event) {
+            switch (event.keyCode) {
+                case 37:
                 if(document.getElementById("left")) {
                     document.getElementById("left").click();
                 }
                 break;
-            case 39:
+                case 39:
                 if(document.getElementById("right")) {
                     document.getElementById("right").click();
                 }
                 break;
-            case 32:
+                case 32:
                 if (document.getElementById("skip")) {
                     document.getElementById("skip").click();
                 }
                 break;
-            case 49:
+                case 49:
                 if (document.getElementById("category0")) {
                     document.getElementById("category0").click();
                 }
                 break;
-            case 50:
+                case 50:
                 if (document.getElementById("category1")) {
                     document.getElementById("category1").click();
                 }
-            break;
-            case 51:
+                break;
+                case 51:
                 if (document.getElementById("category2")) {
                     document.getElementById("category2").click();
                 }
                 break;
-        
-            default:
+                
+                default:
                 break;
-        }
+            }
         }, true);
     </script>
 </head>
 
-<body>
-    <h1>GENERAL CLASSIFIER</h1>
-    <p>o melhor classificador que você verá hoje</p>
-    <form action="/" method="POST">
-        <label for="phrase"></label>
-        <div class="box">
-            <%= number %> <%= prhase %>
+<body style="background:#ddd;">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <h1 class="started-template col-sm-6 text-center">GENERAL CLASSIFIER</h1>
+            <div class="col-sm-3"></div>
         </div>
-        <%  if (keyPlace != 'previous' && keyPlace != 'middle') { %>
-            <button name="action" value="-1" id='left' >previous</button>
-        <% }
-        if (keyPlace != 'next' && keyPlace != 'middle') { %>
-            <button name="action" value="1" id='right'>next</button>
-            <br>
-        <% } %>
-        <%if(phraseClassified) {
-            for(var i=0; i < Category.length; i++) {%>
-                <button name="category" value="<%= i %>" id='category<%= i %>'>
-                    <%= Category[i] %>
-                </button>
-            <% }
-            if(!skipFail){%>
-                <button name="skip" value="true" id='skip'>skip</button>
-            <% }
-        }            
-        if(downloadFile) { %>
-            <a href="/download" target="_blank" download="Classificados.txt">
-                Download the file
-            </a>
-        <% }  %>
-    </form>
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <p class="lead col-sm-6 text-center">O melhor e mais bonito classificador que você verá hoje</p>
+            <div class="col-sm-3"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2"></div>
+            <form action="/" method="POST" class="col-lg-8 lead text-center">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h4>
+                            <%= number %><%= prhase %>
+                        </hh>
+                    </div>
+                </div>
+                <%  if (keyPlace != 'previous' && keyPlace != 'middle') { %>
+                <div class="row">
+                    <div class="col-sm-2 text-center">
+                        <button class="btn btn-secondary" name="action" value="-1" id='left'>PREVIOUS</button>
+                    </div>
+                    <% } else {%>
+                        <div class="col-sm-2 text-center"></div>
+                    <% } %>
+                        <div class="col-sm-8"></div>
+                    <%if (keyPlace != 'next' && keyPlace != 'middle') { %>
+                        <div class="col-sm-2 text-center">
+                            <button class="btn btn-secondary" name="action" value="1" id='right'>NEXT</button>
+                        </div>
+                        <br>
+                    </div>
+                <% } %>
+                <div class="row">
+                    <div class="col-xs-12"></div>
+                    <div class="col-xs-12"></div>
+                </div>
+                <%if(phraseClassified) { %>
+                    <div class="row">
+                        <div class="col-sm-2"></div>
+                        <% for(var i=0; i < Category.length; i++) {%>
+                            <div class="col-sm-4">
+                                <button class="btn btn-secondary" name="category" value="<%= i %>" id='category<%= i %>'>
+                                    <%= Category[i] %>
+                                </button>
+                            </div>
+                        <% } %>
+                        <%if(!skipFail){%>
+                            <div class="col-sm-2">
+                                <button class="btn btn-secondary" name="skip" value="true" id='skip'>SKIP</button>
+                            </div>
+                        <% } %>
+                    </div>
+                <% } %>
+                    <% if(downloadFile) { %>
+                        <br>
+                        <a class="btn btn-success" href="/download" target="_blank" download="Classificados.txt">
+                            Download the file
+                        </a>
+                    <% }  %>
+            </form>
+            <div class="col-lg-2"></div>
+        </div>
+    </div>
 </body>
-
+                   
 </html>

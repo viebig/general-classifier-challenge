@@ -20,7 +20,9 @@ let categoryDefined     = '';
 let subCategoryDefined  = '';
 let subCategory         = '';
 let cancelSkip          = false;
+
 app.set('view engine', 'ejs');
+app.use(express.static(__dirname + '/node_modules/bootstrap/dist'));
 
 const types = {};
 data.forEach(function (row) {
