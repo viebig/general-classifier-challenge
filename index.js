@@ -133,6 +133,7 @@ app.post('/', urlencodedParser, function (req, res) {
 });
 
 app.get('/download', function(req, res) {
+    res.setHeader('Content-Type', 'text/plain');
     res.sendFile(__dirname + '/out/outputFile.csv');
 });
 
