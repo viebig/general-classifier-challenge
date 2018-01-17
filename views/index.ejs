@@ -61,62 +61,66 @@
             <p class="lead col-sm-6 text-center">O melhor e mais bonito classificador que você verá hoje</p>
             <div class="col-sm-3"></div>
         </div>
-        <div class="row">
-            <div class="col-lg-2"></div>
-            <form action="/" method="POST" class="col-lg-8 lead text-center">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <h4>
-                            <%= number %><%= prhase %>
-                        </hh>
+        <form action="/" method="POST">
+            <div class="row">
+                <%  if (keyPlace != 'previous' && keyPlace != 'middle' && !downloadFile) { %>
+                    <div class="col-lg-2 text-center">
+                        <button class="btn btn-default btn-lg" name="action" value="-1" id='left'>PREVIOUS</button>
                     </div>
-                </div>
-                <%  if (keyPlace != 'previous' && keyPlace != 'middle') { %>
-                <div class="row">
-                    <div class="col-sm-2 text-center">
-                        <button class="btn btn-secondary" name="action" value="-1" id='left'>PREVIOUS</button>
-                    </div>
-                    <% } else {%>
-                        <div class="col-sm-2 text-center"></div>
-                    <% } %>
-                        <div class="col-sm-8"></div>
-                    <%if (keyPlace != 'next' && keyPlace != 'middle') { %>
-                        <div class="col-sm-2 text-center">
-                            <button class="btn btn-secondary" name="action" value="1" id='right'>NEXT</button>
-                        </div>
-                        <br>
-                    </div>
+                <% } else {%>
+                    <div class="col-lg-2 text-center"></div>
                 <% } %>
-                <div class="row">
-                    <div class="col-xs-12"></div>
-                    <div class="col-xs-12"></div>
-                </div>
-                <%if(phraseClassified) { %>
-                    <div class="row">
-                        <div class="col-sm-2"></div>
+                    <div class="panel panel-default col-lg-8 lead text-center">
+                        <div class="panel-body">
+                            <h4>
+                            <%    if(!downloadFile) { %>
+                                    <%= number %><%= prhase %>
+                            <%    } else { %>
+                                    Seu Arquivo foi totalmente Classificado, faça o Download no botão abaixo.
+                            <%    } %>
+                            </hh>
+                        </div>
+                    </div>
+                <%if (keyPlace != 'next' && keyPlace != 'middle' && !downloadFile) { %>
+                    <div class="col-lg-2 text-center">
+                        <button class="btn btn-default btn-lg" name="action" value="1" id='right'>NEXT</button>
+                    </div>
+                    <br>
+                <% } %>
+            </div>
+            <%if(phraseClassified && !downloadFile) { %>
+                <div class="text-center">
+                    <div class="btn-group">
                         <% for(var i=0; i < Category.length; i++) {%>
-                            <div class="col-sm-4">
-                                <button class="btn btn-secondary" name="category" value="<%= i %>" id='category<%= i %>'>
+                                <button class="btn btn-primary" name="category" value="<%= i %>" id='category<%= i %>'>
                                     <%= Category[i] %>
                                 </button>
-                            </div>
-                        <% } %>
-                        <%if(!skipFail){%>
-                            <div class="col-sm-2">
-                                <button class="btn btn-secondary" name="skip" value="true" id='skip'>SKIP</button>
-                            </div>
-                        <% } %>
+                            <% } %>
                     </div>
+                </div>
+                    <br>
+            <div class="row">
+                <div class="col-md-3"></div>
+                    <%if(!skipFail && !downloadFile){%>
+                        <div class=" col-md-6 text-center">
+                            <button class="btn btn-warning" name="skip" value="true" id='skip'>SKIP</button>
+                        </div>
+                    <% } %>
                 <% } %>
-                    <% if(downloadFile) { %>
-                        <br>
+                <div class="col-md-3"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-3"></div>
+                <% if(downloadFile) { %>
+                    <div class="col-md-6 text-center">
                         <a class="btn btn-success" href="/download" target="_blank" download="Classificados.txt">
                             Download the file
                         </a>
-                    <% }  %>
-            </form>
-            <div class="col-lg-2"></div>
-        </div>
+                    </div>
+                <% }  %>
+                <div class="col-md-3"></div>
+            </div>
+        </form>
     </div>
 </body>
                    
