@@ -1,0 +1,14 @@
+{
+  "name": "general-classifier",
+  "version": "1.0.0",
+  "description": "Development By Felipe G. Santos to Pontal Tech",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "bootstrap": "^3.3.7",
+    "csv": "^2.0.0",
+    "ejs": "^2.5.7",
+    "express": "^4.16.2",
+    "nodemon": "^1.12.1"
+  }
+}

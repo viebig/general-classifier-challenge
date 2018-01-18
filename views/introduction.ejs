@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Welcome</title>
+    <script language="javascript" src="js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="icon" href="https://www.cphportal.com/Images/ico/checkmark2_128.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body style="background:#ddd">
+    <div class="container">
+        <h1 class="text-center">
+            <img class="center" style="width:50px" src="https://www.cphportal.com/Images/ico/checkmark2_128.png"
+                alt="checked">
+            GENERAL CLASSIFIER</h1>
+        <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-8">
+                    <h2>Objetivo</h2>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-8">
+                O aplicativo fornece uma interface para mensagens de classificação manual através de duas categorias de nível
+                voltadas para processamento de linguagem natural. 
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-8">
+                <h2>Como Usar</h2>
+            </div>
+            <div class="col-sm-2"></div>    
+        </div>
+        <div class="row">
+            <div class="col-sm-2"></div>    
+            <div class="col-sm-8">
+                Todas as ações podem ser executadas com comandos no teclado, sendo seta para direita um comando para voltar e seta para esquerda um comando para avançar. <br>
+                A tecla de espaço é usada para pular frases, e elas serão classificadas como puladas <br><br>
+                As teclas de 1 a 9 são usadas para classificar as frases.
+                Quando todo o arquivo estiver classificado você poderá baixar o arquivo classificado.
+            </div>    
+            <div class="col-sm-2"></div>
+        </div>
+        <br><br><br>
+        <div class="row">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-4 text-center">
+                    <form action="/classifier" method="POST">
+                        <button name="jump" class="btn btn-success btn-lg btn-block">Começar</button>
+                    </form>
+                </div>
+                <div class="col-sm-4"></div>
+        </div>
+    </div>
+</body>
+</html>

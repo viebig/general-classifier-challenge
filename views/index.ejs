@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <title>Classifier</title>
+    <script language="javascript" src="js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="icon" href="https://www.cphportal.com/Images/ico/checkmark2_128.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        document.addEventListener('keydown', function (event) {
+            switch (event.keyCode) {
+                case 37:
+                if(document.getElementById("left")) {
+                    document.getElementById("left").click();
+                }
+                break;
+                case 39:
+                if(document.getElementById("right")) {
+                    document.getElementById("right").click();
+                }
+                break;
+                case 32:
+                if (document.getElementById("skip")) {
+                    document.getElementById("skip").click();
+                }
+                break;
+                case 49:
+                if (document.getElementById("category0")) {
+                    document.getElementById("category0").click();
+                }
+                break;
+                case 50:
+                if (document.getElementById("category1")) {
+                    document.getElementById("category1").click();
+                }
+                break;
+                case 51:
+                if (document.getElementById("category2")) {
+                    document.getElementById("category2").click();
+                }
+                break;
+                default:
+                break;
+            }
+        }, true);
+    </script>
+</head>
+
+<body style="background:#ddd;">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <h1 class="started-template col-sm-6 text-center">GENERAL CLASSIFIER</h1>
+            <div class="col-sm-3"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <p class="lead col-sm-6 text-center">O melhor e mais bonito classificador que você verá hoje</p>
+            <div class="col-sm-3"></div>
+        </div>
+        <form action="/classifier" method="POST">
+            <div class="row">
+                <%  if (keyPlace != 'previous' && keyPlace != 'middle' && !downloadFile) { %>
+                    <div class="col-lg-2 text-center">
+                        <button class="btn btn-default btn-lg" name="action" value="-1" id='left'>PREVIOUS</button>
+                    </div>
+                <% } else {%>
+                    <div class="col-lg-2 text-center"></div>
+                <% } %>
+                    <div class="panel panel-default col-lg-8 lead text-center">
+                        <div class="panel-body">
+                            <h4>
+                            <%    if(!downloadFile) { %>
+                                    <%= number %><%= prhase %>
+                            <%    } else { %>
+                                    Seu Arquivo foi totalmente Classificado, faça o Download no botão abaixo.
+                            <%    } %>
+                            </hh>
+                        </div>
+                    </div>
+                <%if (keyPlace != 'next' && keyPlace != 'middle' && !downloadFile) { %>
+                    <div class="col-lg-2 text-center">
+                        <button class="btn btn-default btn-lg" name="action" value="1" id='right'>NEXT</button>
+                    </div>
+                    <br>
+                <% } %>
+            </div>
+            <%if(phraseClassified && !downloadFile) { %>
+                <div class="text-center">
+                    <div class="btn-group">
+                        <% for(var i=0; i < Category.length; i++) {%>
+                                <button class="btn btn-primary" name="category" value="<%= i %>" id='category<%= i %>'>
+                                    <%= Category[i] %>
+                                </button>
+                            <% } %>
+                    </div>
+                </div>
+                    <br>
+            <div class="row">
+                <div class="col-md-3"></div>
+                    <%if(!skipFail && !downloadFile){%>
+                        <div class=" col-md-6 text-center">
+                            <button class="btn btn-warning" name="skip" value="true" id='skip'>SKIP</button>
+                        </div>
+                    <% } %>
+                <% } %>
+                <div class="col-md-3"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-3"></div>
+                <% if(downloadFile) { %>
+                    <div class="col-md-6 text-center">
+                        <a class="btn btn-success" href="/download" target="_blank" download="Classificados.txt">
+                            Download the file
+                        </a>
+                    </div>
+                <% }  %>
+                <div class="col-md-3"></div>
+            </div>
+        </form>
+    </div>
+</body>
+                   
+</html>
