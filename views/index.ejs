@@ -41,7 +41,6 @@
                     document.getElementById("category2").click();
                 }
                 break;
-                
                 default:
                 break;
             }
@@ -61,7 +60,7 @@
             <p class="lead col-sm-6 text-center">O melhor e mais bonito classificador que você verá hoje</p>
             <div class="col-sm-3"></div>
         </div>
-        <form action="/" method="POST">
+        <form action="/classifier" method="POST">
             <div class="row">
                 <%  if (keyPlace != 'previous' && keyPlace != 'middle' && !downloadFile) { %>
                     <div class="col-lg-2 text-center">

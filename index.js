@@ -41,19 +41,11 @@ const subsCategory = categoryHeaders.reduce((arr, type) => {
 }, []);
 
 app.get('/', function (req, res) {
-    res.render('index', {
-        prhase: phrase[count],
-        Category: categoryHeaders,
-        skipFail: true,
-        keyPlace: 'previous',
-        phraseClassified: true,
-        number: counter,
-        downloadFile: false
-    });
+    res.render('introduction');
 });
 
 let array       = [];
-app.post('/', urlencodedParser, function (req, res) {
+app.post('/classifier', urlencodedParser, function (req, res) {
     let turn        = req.body.action;
     let cats        = req.body.category;
     let skip        = req.body.skip;
@@ -137,6 +129,11 @@ app.post('/', urlencodedParser, function (req, res) {
 app.get('/download', function(req, res) {
     res.setHeader('Content-Type', 'text/plain');
     res.sendFile(__dirname + '/out/outputFile.csv');
+});
+
+
+app.get('/*', function(req, res) {
+   res.render('error'); 
 });
 
 function writeIntoFile(txtOutput, firstCategory, category) {
