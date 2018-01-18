@@ -1,8 +1,4 @@
-"The quick brown hornet jumps over the lazy ant", ANIMAL_DARK
-"The quick grey bear jumps over the lazy wolf", INSECT_LIGHT
+"The quick brown hornet jumps over the lazy ant", ANIMAL_LIGHT
+"The quick grey bear jumps over the lazy wolf", INSECT_DARK
 "The quick pink firefly jumps over the lazy fly", INSECT_LIGHT
--
--
--
--
--
+"The quick hummingbird raven jumps over the lazy raven", ANIMAL_GREY

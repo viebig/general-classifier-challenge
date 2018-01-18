@@ -127,12 +127,13 @@ app.all('/classifier', urlencodedParser, function (req, res) {
     res.end();
 });
 
-app.get('/*', function(req, res) {
-   res.render('error'); 
-});
 app.get('/download', function(req, res) {
     res.setHeader('Content-Type', 'text/plain');
     res.sendFile(__dirname + '/out/outputFile.csv');
+});
+
+app.get('/*', function(req, res) {
+   res.render('error'); 
 });
 
 
