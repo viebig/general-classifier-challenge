@@ -45,7 +45,8 @@ app.get('/', function (req, res) {
 });
 
 let array       = [];
-app.post('/classifier', urlencodedParser, function (req, res) {
+
+app.all('/classifier', urlencodedParser, function (req, res) {
     let turn        = req.body.action;
     let cats        = req.body.category;
     let skip        = req.body.skip;
@@ -126,15 +127,15 @@ app.post('/classifier', urlencodedParser, function (req, res) {
     res.end();
 });
 
+app.get('/*', function(req, res) {
+   res.render('error'); 
+});
 app.get('/download', function(req, res) {
     res.setHeader('Content-Type', 'text/plain');
     res.sendFile(__dirname + '/out/outputFile.csv');
 });
 
 
-app.get('/*', function(req, res) {
-   res.render('error'); 
-});
 
 function writeIntoFile(txtOutput, firstCategory, category) {
     let outputLine = '';
